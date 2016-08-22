@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
 
     private ControlTower controlTower;
     private Drone drone;
+    //private int droneType = Type.TYPE_COPTER;
     private int droneType = Type.TYPE_UNKNOWN;
     private final Handler handler = new Handler();
     Spinner modeSelector;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
 
         // Initialize the service manager
         this.controlTower = new ControlTower(getApplicationContext());
+        // Initialize the drone
         this.drone = new Drone(getApplicationContext());
 
         this.modeSelector = (Spinner)findViewById(R.id.modeSelect);
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
     @Override
     public void onStop() {
         super.onStop();
+        // Make sure that when the MainActivity is stopped, the drone is unregistered from the control tower.
         if (this.drone.isConnected()) {
             this.drone.disconnect();
             updateConnectedButton(false);
@@ -80,9 +83,11 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         this.controlTower.disconnect();
     }
 
+    /* 드론 리스너 */
     @Override
     public void onDroneEvent(String event, Bundle extras) {
         switch (event) {
+            // 통신 연결 이벤트
             case AttributeEvent.STATE_CONNECTED:
                 alertUser("Drone Connected");
                 updateConnectedButton(this.drone.isConnected());
@@ -93,13 +98,14 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
                 updateConnectedButton(this.drone.isConnected());
                 break;
 
+            // telemetry 이벤트
+            case AttributeEvent.STATE_VEHICLE_MODE:
+                updateVehicleMode();
+                break;
+                
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
                 updateArmButton();
-                break;
-
-            case AttributeEvent.STATE_VEHICLE_MODE:
-                updateVehicleMode();
                 break;
 
             case AttributeEvent.TYPE_UPDATED:
@@ -126,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
 
     @Override
     public void onDroneConnectionFailed(ConnectionResult result) {
+        // deprecated. use onLinkStateUpdated
+    }
+    @Override
+    public void onLinkStateUpdated(LinkConnectionStatus result) {
 
     }
 
@@ -134,9 +144,10 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
 
     }
 
-    // 3DR Services Listener
+    /* 3DR Services Listener */
     @Override
     public void onTowerConnected() {
+        // 드론 등록
         this.controlTower.registerDrone(this.drone, this.handler);
         this.drone.registerDroneListener(this);
     }
@@ -145,23 +156,32 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
     public void onTowerDisconnected() {
 
     }
-
+    
+    // 통신 연결 버튼
     public void onBtnConnectTap(View view) {
         if(this.drone.isConnected()) {
             this.drone.disconnect();
         } else {
             Bundle extraParams = new Bundle();
             extraParams.putInt(ConnectionType.EXTRA_UDP_SERVER_PORT, 14550); // Set default port to 14550
-            //extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, 57600); // Set default baud rate to 57600
+
             ConnectionParameter connectionParams = new ConnectionParameter(ConnectionType.TYPE_UDP, extraParams, null);
+
+            // 원하는 연결방식을 가져와서 분기처리 TODO
+            //ConnectionParameter connectionParams = ConnectionParameter.newBluetoothConnection(bluetoothAddress);
+            //ConnectionParameter connectionParams = ConnectionParameter.newTcpConnection(tcpServerIp);
+            //ConnectionParameter connectionParams = ConnectionParameter.newTcpConnection(tcpServerIp, tcpServerPort);
+
             this.drone.connect(connectionParams);
         }
     }
 
+    // 알럿
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
+    // 연결버튼 텍스트 갱신
     protected void updateConnectedButton(Boolean isConnected) {
         Button connectButton = (Button)findViewById(R.id.btnConnect);
         if (isConnected) {
