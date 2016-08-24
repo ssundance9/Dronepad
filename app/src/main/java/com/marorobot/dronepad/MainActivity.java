@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.interfaces.DroneListener;
+import com.o3dr.android.client.interfaces.LinkListener;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
@@ -30,10 +31,11 @@ import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
+import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DroneListener, TowerListener {
+public class MainActivity extends AppCompatActivity implements DroneListener, LinkListener, TowerListener {
 
     private ControlTower controlTower;
     private Drone drone;
