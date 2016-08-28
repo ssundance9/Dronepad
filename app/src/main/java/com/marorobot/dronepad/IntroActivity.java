@@ -1,7 +1,9 @@
 package com.marorobot.dronepad;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 
 public class IntroActivity extends AppCompatActivity {
@@ -10,9 +12,10 @@ public class IntroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+    }
 
-        //Remove title bar
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+    public void onBtnConnectTap(View view) {
+        Intent intent = new Intent(getApplicationContext(), PadActivity.class);
+        startActivity(intent);
     }
 }

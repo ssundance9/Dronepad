@@ -1,6 +1,7 @@
 package com.marorobot.dronepad;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
+import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.services.android.lib.coordinate.LatLong;
@@ -148,7 +150,7 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
 
     }
 
-    /*public void onBtnConnectTap(View view) {
+    public void onBtnConnect(View view) {
         if(this.drone.isConnected()) {
             this.drone.disconnect();
         } else {
@@ -158,25 +160,39 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
             ConnectionParameter connectionParams = new ConnectionParameter(ConnectionType.TYPE_UDP, extraParams, null);
             this.drone.connect(connectionParams);
         }
-    }*/
+    }
 
     public void onBtnTakeOff(View view) {
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
-        if (vehicleState.isFlying()) {
+        /*if (vehicleState.isFlying()) {
             // Land
-            alertUser("Drone is Flying.");
+            alertUser("드론이 비행중입니다.");
             //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
         } else if (vehicleState.isArmed()) {
             // Take off
             this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
         } else if (!vehicleState.isConnected()) {
             // Connect
-            alertUser("Connect to a drone first");
+            alertUser("먼저 드론과 연결하십시오.");
         } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
             // Connected but not Armed
             this.drone.arm(true);
+        }*/
+
+        if (vehicleState.isFlying()) {
+            // Land
+            alertUser("드론이 비행중입니다.");
+        } else if (vehicleState.isArmed()) {
+            // Take off
+            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
+        } else if (!vehicleState.isConnected()) {
+            // Connect
+            alertUser("먼저 드론과 연결하십시오.");
+        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
+            // Connected but not Armed
+            alertUser("ARM 버튼을 클릭하세요.");
         }
     }
 
@@ -184,10 +200,12 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
+    // 연결버튼 텍스트 갱신
     protected void updateConnectedButton(Boolean isConnected) {
         Button connectButton = (Button)findViewById(R.id.btnConnect);
         if (isConnected) {
             connectButton.setText("Disconnect");
+            //connectButton.setBackground(getDrawable(0));
         } else {
             connectButton.setText("Connect");
         }
@@ -199,14 +217,14 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
 
         if (vehicleState.isFlying()) {
             // Land
-            alertUser("Drone is Flying.");
+            alertUser("드론이 비행중입니다.");
             //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
         } else if (vehicleState.isArmed()) {
             // Take off
             this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
         } else if (!vehicleState.isConnected()) {
             // Connect
-            alertUser("Connect to a drone first");
+            alertUser("먼저 드론과 연결하십시오.");
         } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
             // Connected but not Armed
             this.drone.arm(true);
@@ -296,11 +314,11 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
         }
     }
 
-    public void onArmButtonTap(View view) {
+    public void onBtnArm(View view) {
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
-        if (vehicleState.isFlying()) {
+        /*if (vehicleState.isFlying()) {
             // Land
             this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
         } else if (vehicleState.isArmed()) {
@@ -308,10 +326,20 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
             this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
         } else if (!vehicleState.isConnected()) {
             // Connect
-            alertUser("Connect to a drone first");
+            alertUser("먼저 드론과 연결하십시오.");
         } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
             // Connected but not Armed
-            this.drone.arm(true);
+            //this.drone.arm(true);
+            VehicleApi.getApi(this.drone).arm(true);
+        }*/
+
+        if (!vehicleState.isConnected()) {
+            alertUser("먼저 드론과 연결하십시오.");
+        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
+            // Connected but not Armed
+            VehicleApi.getApi(this.drone).arm(true);
+        } else if (vehicleState.isFlying()) {
+            alertUser("드론이 비행중입니다.");
         }
     }
 

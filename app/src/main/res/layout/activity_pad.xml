@@ -11,32 +11,116 @@
     tools:context="com.marorobot.dronepad.PadActivity">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <Button
-            android:layout_width="145dp"
-            android:layout_height="25dp"
+        android:layout_height="match_parent">
 
-            android:id="@+id/takeOffButton"
-            android:background="@drawable/takeoff"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="45dp"
-            android:onClick="onBtnTakeOff"
-            />
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
 
-        <Button
-            android:layout_width="145dp"
-            android:layout_height="25dp"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView"
+                android:src="@drawable/ci"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-            android:id="@+id/landingButton"
-            android:background="@drawable/landing"
-            android:layout_marginLeft="95dp"
-            android:layout_marginTop="45dp"
-            android:onClick="onBtnLanding"
-            />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView2"
+                android:src="@drawable/cnt_off"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout >
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            android:measureWithLargestChild="false"
+            android:shrinkColumns="0,1,2"
+            android:layout_marginBottom="15dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button6"
+                    android:background="@drawable/btn_followme"
+                    android:clickable="false"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button7"
+                    android:background="@drawable/btn_takeoff"
+                    android:layout_weight="1"
+                    android:onClick="onBtnTakeOff" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button8"
+                    android:background="@drawable/btn_armed"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:onClick="onBtnArm"
+                    />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button4"
+                    android:background="@drawable/btn_manualflight"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button5"
+                    android:background="@drawable/btn_landdisarmed"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnConnect"
+                    android:background="@drawable/btn_connect"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp" />
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView3"
+                android:src="@drawable/company" />
+        </LinearLayout>
     </LinearLayout>
-
-
 </RelativeLayout>
