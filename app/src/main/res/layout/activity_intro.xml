@@ -13,47 +13,61 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_height="match_parent"
+
         >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ci"
-            />
-    </LinearLayout>
+            android:src="@drawable/ci_d"
+            android:layout_gravity="center_horizontal" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
 
-        android:gravity="center"
-        android:layout_centerVertical="true">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
 
-        <Button
-            android:layout_width="150dp"
+            android:id="@+id/linearLayout"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/intro_btn_photo"
+                android:id="@+id/button"
+                android:layout_weight="1"
+                android:layout_marginRight="20dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/intro_btn_connect"
+                android:onClick="onBtnConnectTap"
+                android:id="@+id/button2"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/intro_btn_setup"
+                android:id="@+id/button3"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dp" />
+        </LinearLayout>
+
+
+
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PHOTO"
-            android:id="@+id/button" />
-
-        <Button
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="CONNECT"
-            android:onClick="onBtnConnectTap"
-            android:id="@+id/button2" />
-
-        <Button
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="SETUP"
-            android:id="@+id/button3" />
+            android:src="@drawable/company"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </RelativeLayout>

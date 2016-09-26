@@ -1,10 +1,9 @@
 package com.marorobot.dronepad;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,8 +14,8 @@ import android.widget.Toast;
 
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
-import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.interfaces.DroneListener;
+import com.o3dr.android.client.interfaces.LinkListener;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
@@ -32,29 +31,30 @@ import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
+import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import java.util.List;
 
-/**
- * Created by ssundance on 2016-08-21.
- */
-public class PadActivity extends AppCompatActivity implements DroneListener, TowerListener {
+public class SampleActivitiy extends AppCompatActivity implements DroneListener, LinkListener, TowerListener {
 
     private ControlTower controlTower;
     private Drone drone;
+    //private int droneType = Type.TYPE_COPTER;
     private int droneType = Type.TYPE_UNKNOWN;
     private final Handler handler = new Handler();
+    Spinner modeSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pad);
+        setContentView(R.layout.activity_sample);
 
         // Initialize the service manager
         this.controlTower = new ControlTower(getApplicationContext());
+        // Initialize the drone
         this.drone = new Drone(getApplicationContext());
 
-        /*this.modeSelector = (Spinner)findViewById(R.id.modeSelect);
+        this.modeSelector = (Spinner)findViewById(R.id.modeSelect);
         this.modeSelector.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -64,7 +64,7 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
             public void onNothingSelected(AdapterView<?> parent) {
                 // Do nothing
             }
-        });*/
+        });
     }
 
     @Override
@@ -76,6 +76,7 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
     @Override
     public void onStop() {
         super.onStop();
+        // Make sure that when the SampleActivitiy is stopped, the drone is unregistered from the control tower.
         if (this.drone.isConnected()) {
             this.drone.disconnect();
             updateConnectedButton(false);
@@ -84,9 +85,11 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
         this.controlTower.disconnect();
     }
 
+    /* 드론 리스너 */
     @Override
     public void onDroneEvent(String event, Bundle extras) {
         switch (event) {
+            // 통신 연결 이벤트
             case AttributeEvent.STATE_CONNECTED:
                 alertUser("Drone Connected");
                 updateConnectedButton(this.drone.isConnected());
@@ -97,13 +100,14 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
                 updateConnectedButton(this.drone.isConnected());
                 break;
 
+            // telemetry 이벤트
+            case AttributeEvent.STATE_VEHICLE_MODE:
+                updateVehicleMode();
+                break;
+                
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
                 updateArmButton();
-                break;
-
-            case AttributeEvent.STATE_VEHICLE_MODE:
-                updateVehicleMode();
                 break;
 
             case AttributeEvent.TYPE_UPDATED:
@@ -130,6 +134,10 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
 
     @Override
     public void onDroneConnectionFailed(ConnectionResult result) {
+        // deprecated. use onLinkStateUpdated
+    }
+    @Override
+    public void onLinkStateUpdated(LinkConnectionStatus result) {
 
     }
 
@@ -138,9 +146,10 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
 
     }
 
-    // 3DR Services Listener
+    /* 3DR Services Listener */
     @Override
     public void onTowerConnected() {
+        // 드론 등록
         this.controlTower.registerDrone(this.drone, this.handler);
         this.drone.registerDroneListener(this);
     }
@@ -149,53 +158,27 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
     public void onTowerDisconnected() {
 
     }
-
-    public void onBtnConnect(View view) {
+    
+    // 통신 연결 버튼
+    public void onBtnConnectTap(View view) {
         if(this.drone.isConnected()) {
             this.drone.disconnect();
         } else {
             Bundle extraParams = new Bundle();
             extraParams.putInt(ConnectionType.EXTRA_UDP_SERVER_PORT, 14550); // Set default port to 14550
-            //extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, 57600); // Set default baud rate to 57600
+
             ConnectionParameter connectionParams = new ConnectionParameter(ConnectionType.TYPE_UDP, extraParams, null);
+
+            // 원하는 연결방식을 가져와서 분기처리 TODO
+            //ConnectionParameter connectionParams = ConnectionParameter.newBluetoothConnection(bluetoothAddress);
+            //ConnectionParameter connectionParams = ConnectionParameter.newTcpConnection(tcpServerIp);
+            //ConnectionParameter connectionParams = ConnectionParameter.newTcpConnection(tcpServerIp, tcpServerPort);
+
             this.drone.connect(connectionParams);
         }
     }
 
-    public void onBtnTakeOff(View view) {
-        Button thisButton = (Button)view;
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-
-        /*if (vehicleState.isFlying()) {
-            // Land
-            alertUser("드론이 비행중입니다.");
-            //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            this.drone.arm(true);
-        }*/
-
-        if (vehicleState.isFlying()) {
-            // Land
-            alertUser("드론이 비행중입니다.");
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            alertUser("ARM 버튼을 클릭하세요.");
-        }
-    }
-
+    // 알럿
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
@@ -205,49 +188,28 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
         Button connectButton = (Button)findViewById(R.id.btnConnect);
         if (isConnected) {
             connectButton.setText("Disconnect");
-            //connectButton.setBackground(getDrawable(0));
         } else {
             connectButton.setText("Connect");
         }
     }
 
-    public void onBtnLanding(View view) {
-        Button thisButton = (Button)view;
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-
-        if (vehicleState.isFlying()) {
-            // Land
-            alertUser("드론이 비행중입니다.");
-            //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            this.drone.arm(true);
-        }
-    }
-
     public void onFlightModeSelected(View view) {
-        //VehicleMode vehicleMode = (VehicleMode) this.modeSelector.getSelectedItem();
-        //this.drone.changeVehicleMode(vehicleMode);
+        VehicleMode vehicleMode = (VehicleMode) this.modeSelector.getSelectedItem();
+        this.drone.changeVehicleMode(vehicleMode);
     }
 
     protected void updateVehicleModesForType(int droneType) {
         List<VehicleMode> vehicleModes =  VehicleMode.getVehicleModePerDroneType(droneType);
         ArrayAdapter<VehicleMode> vehicleModeArrayAdapter = new ArrayAdapter<VehicleMode>(this, android.R.layout.simple_spinner_item, vehicleModes);
         vehicleModeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //this.modeSelector.setAdapter(vehicleModeArrayAdapter);
+        this.modeSelector.setAdapter(vehicleModeArrayAdapter);
     }
 
     protected void updateVehicleMode() {
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
         VehicleMode vehicleMode = vehicleState.getVehicleMode();
-        //ArrayAdapter arrayAdapter = (ArrayAdapter)this.modeSelector.getAdapter();
-        //this.modeSelector.setSelection(arrayAdapter.getPosition(vehicleMode));
+        ArrayAdapter arrayAdapter = (ArrayAdapter)this.modeSelector.getAdapter();
+        this.modeSelector.setSelection(arrayAdapter.getPosition(vehicleMode));
     }
 
     protected void updateAltitude() {
@@ -314,11 +276,11 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
         }
     }
 
-    public void onBtnArm(View view) {
+    public void onArmButtonTap(View view) {
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
-        /*if (vehicleState.isFlying()) {
+        if (vehicleState.isFlying()) {
             // Land
             this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
         } else if (vehicleState.isArmed()) {
@@ -326,25 +288,17 @@ public class PadActivity extends AppCompatActivity implements DroneListener, Tow
             this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
         } else if (!vehicleState.isConnected()) {
             // Connect
-            alertUser("먼저 드론과 연결하십시오.");
+            alertUser("Connect to a drone first");
         } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
             // Connected but not Armed
-            //this.drone.arm(true);
-            VehicleApi.getApi(this.drone).arm(true);
-        }*/
-
-        if (!vehicleState.isConnected()) {
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            VehicleApi.getApi(this.drone).arm(true);
-        } else if (vehicleState.isFlying()) {
-            alertUser("드론이 비행중입니다.");
+            this.drone.arm(true);
         }
     }
 
     public void onBtnNextTap(View view) {
-        Intent intent = new Intent(getApplicationContext(), PadActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
 }
+
+
