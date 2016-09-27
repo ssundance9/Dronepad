@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
+import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.TowerListener;
@@ -34,6 +35,7 @@ import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
+import com.o3dr.services.android.lib.model.SimpleCommandListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,29 +126,42 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
                 break;
 
             case AttributeEvent.STATE_UPDATED:
+                State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+
+                if (vehicleState.isArmed()) {
+                    alertUser("드론이 ARMING.");
+                } else if (vehicleState.isFlying()) {
+                    alertUser("드론이 FLYING.");
+                } //else if (vehicleState.isFlying()) {
+                    //alertUser("드론이 FLYING.");
+                //}
+
             case AttributeEvent.STATE_ARMING:
-                updateArmButton();
+                //alertUser("STATE_ARMING");
+                //updateArmButton();
                 break;
 
             case AttributeEvent.STATE_VEHICLE_MODE:
-                updateVehicleMode();
+                //updateVehicleMode();
+                //alertUser("STATE_VEHICLE_MODE");
                 break;
 
             case AttributeEvent.TYPE_UPDATED:
-                Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
+                //alertUser("TYPE_UPDATED");
+                /*Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
                 if (newDroneType.getDroneType() != this.droneType) {
                     this.droneType = newDroneType.getDroneType();
                     updateVehicleModesForType(this.droneType);
-                }
+                }*/
                 break;
 
             case AttributeEvent.SPEED_UPDATED:
-                updateAltitude();
-                updateSpeed();
+                //updateAltitude();
+                //updateSpeed();
                 break;
 
             case AttributeEvent.HOME_UPDATED:
-                updateDistanceFromHome();
+                //updateDistanceFromHome();
                 break;
 
             default:
@@ -180,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         if(this.drone.isConnected()) {
             this.drone.disconnect();
         } else {
-            Bundle extraParams = new Bundle();
-            extraParams.putInt(ConnectionType.EXTRA_UDP_SERVER_PORT, 14550); // Set default port to 14550
+            //Bundle extraParams = new Bundle();
+            //extraParams.putInt(ConnectionType.EXTRA_UDP_SERVER_PORT, 14550); // Set default port to 14550
             //extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, 57600); // Set default baud rate to 57600
 
 
@@ -193,6 +208,70 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
 
             this.drone.connect(connectionParams);
 
+        }
+    }
+
+    public void onBtnArm(View view) {
+        Button thisButton = (Button)view;
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+
+        /*if (vehicleState.isFlying()) {
+            // Land
+            this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
+        } else if (vehicleState.isArmed()) {
+            // Take off
+            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
+        } else if (!vehicleState.isConnected()) {
+            // Connect
+            alertUser("먼저 드론과 연결하십시오.");
+        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
+            // Connected but not Armed
+            //this.drone.arm(true);
+            VehicleApi.getApi(this.drone).arm(true);
+        }*/
+
+        if (!vehicleState.isConnected()) {
+            alertUser("먼저 드론과 연결하십시오.");
+        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){// Connected but not Armed
+            List<Parameter> parametersList = new ArrayList<Parameter>();
+
+            // Pre Arm Check Pass
+            Parameter armingCheck  = new Parameter("ARMING_CHECK", 0, 0);
+            parametersList.add(armingCheck);
+
+            // 위에 코드 안되면
+            // the radio calibration has not been performed
+            // RC3_MIN and RC3_MAX must have been changed from their default values (1100 and 1900) and for channels 1 to 4,
+            // the MIN must be less than 1300 and the MAX greater than 1700.
+            //Parameter rc3Min  = new Parameter("RC3_MIN", 1101, 1101);
+            //parametersList.add(rc3Min);
+            //Parameter rc3Max  = new Parameter("RC3_MAX", 1901, 1901);
+            //parametersList.add(rc3Max);
+
+            Parameters ps = new Parameters(parametersList);
+            VehicleApi.getApi(this.drone).writeParameters(ps);
+
+            //VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+
+            VehicleApi.getApi(this.drone).arm(true, new SimpleCommandListener() {
+                @Override
+                public void onSuccess() {
+                    alertUser("ARM 성공.");
+                }
+
+                @Override
+                public void onError(int executionError) {
+                    alertUser("ARM 실패. - " + executionError);
+                }
+
+                @Override
+                public void onTimeout() {
+                    alertUser("ARM TIMEOUT");
+                }
+            });
+
+        } else if (vehicleState.isFlying()) {
+            alertUser("드론이 비행중입니다.");
         }
     }
 
@@ -220,7 +299,62 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
             alertUser("드론이 비행중입니다.");
         } else if (vehicleState.isArmed()) {
             // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
+            //ControlApi.getApi(this.drone).takeoff(2, null); // Default take off altitude is 2m
+
+            ControlApi.getApi(drone).takeoff(2, new SimpleCommandListener() {
+                @Override
+                public void onSuccess() {
+                    VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_AUTO);
+                    alertUser("TAKE OFF 성공.");
+                }
+
+                @Override
+                public void onError(int executionError) {
+                    alertUser("TAKE OFF 실패. - " + executionError);
+                }
+
+                @Override
+                public void onTimeout() {
+                    alertUser("TAKE OFF TIMEOUT");
+                }
+            });
+
+
+        } else if (!vehicleState.isConnected()) {
+            // Connect
+            alertUser("먼저 드론과 연결하십시오.");
+        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
+            // Connected but not Armed
+            alertUser("ARM 버튼을 클릭하세요.");
+        }
+    }
+
+    public void onBtnLanding(View view) {
+        Button thisButton = (Button)view;
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+
+        if (vehicleState.isFlying()) {
+            // Land
+            //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
+            VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_LAND);
+            VehicleApi.getApi(this.drone).arm(false, new SimpleCommandListener() {
+                @Override
+                public void onSuccess() {
+                    alertUser("DISARM 성공.");
+                }
+
+                @Override
+                public void onError(int executionError) {
+                    alertUser("DISARM 실패. - " + executionError);
+                }
+
+                @Override
+                public void onTimeout() {
+                    alertUser("DISARM TIMEOUT");
+                }
+            });
+        } else if (vehicleState.isArmed()) {
+            alertUser("TakeOff 버튼을 클릭하세요.");
         } else if (!vehicleState.isConnected()) {
             // Connect
             alertUser("먼저 드론과 연결하십시오.");
@@ -234,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    // 연결버튼 텍스트 갱신
+    // 연결버튼 업데이트
     protected void updateConnectedButton(Boolean isConnected) {
         Button btnConnect = (Button)findViewById(R.id.btnConnect);
         ImageView imageConnect = (ImageView) findViewById(R.id.imageConnect);
@@ -246,26 +380,6 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
             //connectButton.setText("Connect");
             btnConnect.setBackgroundResource(R.drawable.main_btn_connect);
             imageConnect.setImageResource(R.drawable.main_cnt_off);
-        }
-    }
-
-    public void onBtnLanding(View view) {
-        Button thisButton = (Button)view;
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-
-        if (vehicleState.isFlying()) {
-            // Land
-            alertUser("드론이 비행중입니다.");
-            //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            this.drone.arm(true);
         }
     }
 
@@ -330,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         return Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
 
-    protected void updateArmButton() {
+    /* protected void updateArmButton() {
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
         Button armButton = (Button)findViewById(R.id.btnArmTakeOff);
 
@@ -350,54 +464,9 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
             // Connected but not Armed
             armButton.setText("ARM");
         }
-    }
+    } */
 
-    public void onBtnArm(View view) {
-        Button thisButton = (Button)view;
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
-        /*if (vehicleState.isFlying()) {
-            // Land
-            this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            //this.drone.arm(true);
-            VehicleApi.getApi(this.drone).arm(true);
-        }*/
-
-        if (!vehicleState.isConnected()) {
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            List<Parameter> parametersList = new ArrayList<Parameter>();
-
-            // Pre Arm Check Pass
-            Parameter armingCheck  = new Parameter("ARMING_CHECK", 0, 0);
-            parametersList.add(armingCheck);
-
-            // 위에 코드 안되면
-            // the radio calibration has not been performed
-            // RC3_MIN and RC3_MAX must have been changed from their default values (1100 and 1900) and for channels 1 to 4,
-            // the MIN must be less than 1300 and the MAX greater than 1700.
-            //Parameter rc3Min  = new Parameter("RC3_MIN", 1101, 1101);
-            //parametersList.add(rc3Min);
-            //Parameter rc3Max  = new Parameter("RC3_MAX", 1901, 1901);
-            //parametersList.add(rc3Max);
-
-            Parameters ps = new Parameters(parametersList);
-            VehicleApi.getApi(drone).writeParameters(ps);
-
-            // Connected but not Armed
-            VehicleApi.getApi(this.drone).arm(true);
-        } else if (vehicleState.isFlying()) {
-            alertUser("드론이 비행중입니다.");
-        }
-    }
 
     public void onBtnNextTap(View view) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
