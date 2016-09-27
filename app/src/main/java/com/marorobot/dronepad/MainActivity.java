@@ -28,6 +28,8 @@ import com.o3dr.services.android.lib.drone.connection.ConnectionType;
 import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.Home;
+import com.o3dr.services.android.lib.drone.property.Parameter;
+import com.o3dr.services.android.lib.drone.property.Parameters;
 import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
@@ -372,6 +374,24 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
         if (!vehicleState.isConnected()) {
             alertUser("먼저 드론과 연결하십시오.");
         } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
+            List<Parameter> parametersList = new ArrayList<Parameter>();
+
+            // Pre Arm Check Pass
+            Parameter armingCheck  = new Parameter("ARMING_CHECK", 0, 0);
+            parametersList.add(armingCheck);
+
+            // 위에 코드 안되면
+            // the radio calibration has not been performed
+            // RC3_MIN and RC3_MAX must have been changed from their default values (1100 and 1900) and for channels 1 to 4,
+            // the MIN must be less than 1300 and the MAX greater than 1700.
+            //Parameter rc3Min  = new Parameter("RC3_MIN", 1101, 1101);
+            //parametersList.add(rc3Min);
+            //Parameter rc3Max  = new Parameter("RC3_MAX", 1901, 1901);
+            //parametersList.add(rc3Max);
+
+            Parameters ps = new Parameters(parametersList);
+            VehicleApi.getApi(drone).writeParameters(ps);
+
             // Connected but not Armed
             VehicleApi.getApi(this.drone).arm(true);
         } else if (vehicleState.isFlying()) {
