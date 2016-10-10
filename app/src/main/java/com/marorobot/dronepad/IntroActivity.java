@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.o3dr.android.client.ControlTower;
+import com.o3dr.android.client.Drone;
+
 public class IntroActivity extends AppCompatActivity {
 
     @Override
@@ -15,6 +18,11 @@ public class IntroActivity extends AppCompatActivity {
 
     public void onBtnConnectTap(View view) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void onBtnSetupTap(View view) {
+        Intent intent = new Intent(getApplicationContext(), SetupActivity.class);
         startActivity(intent);
     }
 }

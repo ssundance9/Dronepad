@@ -62,7 +62,8 @@
                     android:background="@drawable/main_btn_followme"
                     android:clickable="false"
                     android:layout_weight="1"
-                    android:layout_marginRight="10dp" />
+                    android:layout_marginRight="10dp"
+                    android:onClick="onBtnFollowMe" />
 
                 <Button
                     android:layout_width="wrap_content"
