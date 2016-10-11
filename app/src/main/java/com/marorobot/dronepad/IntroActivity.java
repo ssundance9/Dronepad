@@ -25,4 +25,9 @@ public class IntroActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), SetupActivity.class);
         startActivity(intent);
     }
+
+    public void onBtnPhotoTap(View view) {
+        Intent intent = new Intent(getApplicationContext(), PhotoActivity.class);
+        startActivity(intent);
+    }
 }

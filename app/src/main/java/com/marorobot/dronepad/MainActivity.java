@@ -328,6 +328,10 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     }
 
+    public void onBtnManual(View view) {
+        Intent intent = new Intent(getApplicationContext(), ManualActivity.class);
+        startActivity(intent);
+    }
 
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();

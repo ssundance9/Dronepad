@@ -27,13 +27,15 @@
         <activity
             android:name=".SetupActivity"
             android:screenOrientation="landscape" />
-
-        <!--<service android:name=".AppService" />-->
-
         <activity
             android:name=".ManualActivity"
-            android:screenOrientation="landscape"
-            />
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".PhotoActivity"
+            android:screenOrientation="landscape" />
+
+        <!-- <service android:name=".AppService" /> -->
+        <activity android:name=".ImagePopup"></activity>
     </application>
 
 </manifest>

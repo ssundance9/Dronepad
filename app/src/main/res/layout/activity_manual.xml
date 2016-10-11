@@ -9,7 +9,8 @@
 	android:paddingRight="@dimen/activity_horizontal_margin"
 	android:paddingTop="@dimen/activity_vertical_margin"
 	android:background="@drawable/bg"
-	tools:context=".ManualActivity">
+	tools:context=".ManualActivity"
+	android:gravity="center">
 
 	<RelativeLayout
 		android:layout_width="match_parent"
@@ -27,7 +28,7 @@
 		<ImageView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/imageConnect"
+			android:id="@+id/imageConnect2"
 			android:src="@drawable/main_cnt_off"
 			android:layout_alignParentRight="true"
 			android:layout_alignParentEnd="true"/>
@@ -36,15 +37,20 @@
 
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="185dp"
 		android:orientation="horizontal"
-		android:layout_below="@id/activitymanualRelativeLayout1"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+
+
+
 		android:id="@+id/activitymanualLinearLayout1"
-		android:gravity="center">
+		android:gravity="center"
+		android:layout_centerVertical="true">
 
 		<TableLayout
-			android:layout_width="wrap_content"
-			android:layout_height="185dp"
+			android:layout_width="350dp"
+			android:layout_height="match_parent"
 			android:measureWithLargestChild="false"
 			android:shrinkColumns="0,1,2"
 			android:id="@+id/activityManualTableLayout"
@@ -52,7 +58,10 @@
 			android:layout_alignParentLeft="true"
 			android:layout_alignParentStart="true"
 			android:layout_marginBottom="15dp"
-			android:layout_marginTop="15dp">
+			android:layout_marginTop="15dp"
+			android:layout_marginRight="30dp"
+			android:layout_weight="1"
+			android:layout_marginLeft="40dp">
 
 			<TableRow
 				android:layout_width="match_parent"
@@ -71,7 +80,8 @@
 					android:layout_height="wrap_content"
 					android:background="@drawable/manual_btn_off_top"
 					android:layout_weight="1"
-					android:onClick="onBtnTakeOff"/>
+					android:id="@+id/btnForward"
+					android:nestedScrollingEnabled="false" />
 
 				<Button
 					android:layout_width="wrap_content"
@@ -94,7 +104,8 @@
 					android:layout_height="wrap_content"
 					android:background="@drawable/manual_btn_off_left"
 					android:layout_weight="1"
-					android:layout_marginRight="10dp"/>
+					android:layout_marginRight="10dp"
+					android:id="@+id/btnTurnL" />
 
 				<Button
 					android:layout_width="wrap_content"
@@ -108,7 +119,7 @@
 					android:background="@drawable/manual_btn_off_right"
 					android:layout_weight="1"
 					android:layout_marginLeft="10dp"
-					android:onClick="onBtnConnect"/>
+					android:id="@+id/btnTurnR" />
 
 			</TableRow>
 
@@ -129,7 +140,7 @@
 					android:layout_height="wrap_content"
 					android:background="@drawable/manual_btn_off_bottom"
 					android:layout_weight="1"
-					android:onClick="onBtnTakeOff"/>
+					android:id="@+id/btnBackward" />
 
 				<Button
 					android:layout_width="wrap_content"
@@ -145,33 +156,39 @@
 		<LinearLayout
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
-			android:orientation="vertical">
+			android:orientation="vertical"
+			android:layout_marginLeft="30dp"
+			android:layout_weight="1">
 
 			<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/manual_btn_f1">
+				android:background="@drawable/manual_btn_f1"
+				android:layout_weight="1">
 
 			</Button>
 
 			<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/manual_btn_f2">
+				android:background="@drawable/manual_btn_f2"
+				android:layout_weight="1">
 
 			</Button>
 
 			<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/manual_btn_f3">
+				android:background="@drawable/manual_btn_f3"
+				android:layout_weight="1">
 
 			</Button>
 
 			<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:background="@drawable/manual_btn_f4">
+				android:background="@drawable/manual_btn_f4"
+				android:layout_weight="1">
 
 			</Button>
 

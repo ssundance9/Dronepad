@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/setup_btn_on"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="30dp" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -83,8 +83,10 @@
 
 
 
-                <TableRow android:paddingTop="45dp"
-                    android:paddingLeft="50dp">
+                <TableRow android:paddingTop="65dp"
+                    android:paddingLeft="60dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
@@ -101,12 +103,14 @@
                             android:layout_width="100dp"
                             android:layout_height="30dp"
                             android:background="@drawable/setup_input"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="30dp"
                             android:id="@+id/longitudeValueTextView" />
                     </LinearLayout>
                 </TableRow>
 
-                <TableRow android:paddingLeft="50dp">
+                <TableRow android:paddingLeft="60dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
@@ -124,13 +128,13 @@
                             android:layout_width="100dp"
                             android:layout_height="30dp"
                             android:background="@drawable/setup_input"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="30dp"
                             android:layout_marginTop="10dp"
                             android:id="@+id/altitudeValueTextView" />
                     </LinearLayout>
                 </TableRow>
 
-                <TableRow android:paddingLeft="50dp">
+                <TableRow android:paddingLeft="60dp">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
@@ -148,12 +152,12 @@
                             android:layout_width="100dp"
                             android:layout_height="30dp"
                             android:background="@drawable/setup_input"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="30dp"
                             android:layout_marginTop="10dp" />
                     </LinearLayout>
                 </TableRow>
 
-                <TableRow android:paddingLeft="50dp">
+                <TableRow android:paddingLeft="60dp">
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
@@ -170,7 +174,7 @@
                             android:layout_width="100dp"
                             android:layout_height="30dp"
                             android:background="@drawable/setup_input"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="30dp"
                             android:layout_marginTop="10dp"
                             android:id="@+id/speedValueTextView" />
                     </LinearLayout>
