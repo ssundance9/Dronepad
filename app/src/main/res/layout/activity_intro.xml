@@ -42,7 +42,8 @@
                 android:background="@drawable/intro_btn_photo"
                 android:id="@+id/button"
                 android:layout_weight="1"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:onClick="onBtnPhotoTap" />
 
             <Button
                 android:layout_width="wrap_content"
