@@ -35,7 +35,9 @@
             android:screenOrientation="landscape" />
 
         <!-- <service android:name=".AppService" /> -->
-        <activity android:name=".ImagePopup"></activity>
+        <activity
+            android:name=".ImagePopup"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
