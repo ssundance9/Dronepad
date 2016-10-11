@@ -28,9 +28,12 @@
             android:name=".SetupActivity"
             android:screenOrientation="landscape" />
 
-        <service android:name=".AppService" />
+        <!--<service android:name=".AppService" />-->
 
-        <activity android:name=".ManualActivity"></activity>
+        <activity
+            android:name=".ManualActivity"
+            android:screenOrientation="landscape"
+            />
     </application>
 
 </manifest>
