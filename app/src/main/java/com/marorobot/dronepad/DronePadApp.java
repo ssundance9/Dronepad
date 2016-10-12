@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.multidex.MultiDexApplication;
+import android.app.Application;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by ssundance on 2016-10-02.
  */
-public class DronePadApp extends MultiDexApplication implements DroneListener, TowerListener {
+public class DronePadApp extends Application implements DroneListener, TowerListener {
 
 
     private static final long DELAY_TO_DISCONNECTION = 1000L; // ms
