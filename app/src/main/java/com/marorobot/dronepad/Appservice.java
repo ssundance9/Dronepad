@@ -22,7 +22,7 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 /**
  * Created by ssundance on 2016-10-02.
  */
-public class AppService extends Service {
+public class Appservice extends Service {
 
     private static final IntentFilter filter = new IntentFilter();
 
