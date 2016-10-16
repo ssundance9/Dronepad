@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
     static {
         filter.addAction(AttributeEvent.STATE_CONNECTED);
         filter.addAction(AttributeEvent.STATE_DISCONNECTED);
+        filter.addAction(AttributeEvent.STATE_ARMING);
         filter.addAction(AttributeEvent.AUTOPILOT_ERROR);
     }
 
@@ -90,11 +91,20 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
                     break;
 
+                case AttributeEvent.STATE_ARMING:
+                    updateArmedButton();
+
                 case AttributeEvent.AUTOPILOT_ERROR:
                     final String errorName = intent.getStringExtra(AttributeEventExtra.EXTRA_AUTOPILOT_ERROR_ID);
                     /*if (notificationHandler != null)
                         notificationHandler.onAutopilotError(errorName);*/
                     break;
+
+                default:
+                    updateTakeOffButton();
+                    updateArmedButton();
+                    updateLandingButton();
+
             }
         }
     };
@@ -319,9 +329,11 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
         if (vehicleState.isFlying() && !followState.isEnabled()) {
             alertUser("FOLLOW ME를 시작합니다.");
+            thisButton.setBackgroundResource(R.drawable.main_btn_followme_hover);// todo update button
             FollowApi.getApi(drone).enableFollowMe(FollowType.LEASH);
         } else if (vehicleState.isFlying() && followState.isEnabled()) {
             alertUser("FOLLOW ME를 종료합니다.");
+            thisButton.setBackgroundResource(R.drawable.main_btn_followme);// todo update button
             FollowApi.getApi(drone).disableFollowMe();
         } else {
             alertUser("FOLLOW ME를 시작할 수 없습니다.");
@@ -335,6 +347,54 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    // take off 버튼 업데이트
+    protected void updateTakeOffButton() {
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        Button btnTakeOff = (Button)findViewById(R.id.btnTakeOff);
+
+        if (vehicleState.isFlying()) {
+
+            btnTakeOff.setBackgroundResource(R.drawable.main_btn_takeoff_hover);
+
+        } else {
+
+            btnTakeOff.setBackgroundResource(R.drawable.main_btn_takeoff);
+
+        }
+    }
+
+    // arm 버튼 업데이트
+    protected void updateArmedButton() {
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        Button btnArmed = (Button)findViewById(R.id.btnArmed);
+
+        if (vehicleState.isArmed()) {
+
+            btnArmed.setBackgroundResource(R.drawable.main_btn_armed_hover);
+
+        } else {
+
+            btnArmed.setBackgroundResource(R.drawable.main_btn_armed);
+
+        }
+    }
+
+    // landing 버튼 업데이트
+    protected void updateLandingButton() {
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        Button btnLanding = (Button)findViewById(R.id.btnLanding);
+
+        if (vehicleState.isFlying()) {
+
+            btnLanding.setBackgroundResource(R.drawable.main_btn_landdisarmed);
+
+        } else {
+
+            btnLanding.setBackgroundResource(R.drawable.main_btn_landdisarmed_hover);
+
+        }
     }
 
     // 연결버튼 업데이트

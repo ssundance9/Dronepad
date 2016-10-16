@@ -65,7 +65,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button7"
+                    android:id="@+id/btnTakeOff"
                     android:background="@drawable/main_btn_takeoff"
                     android:layout_weight="1"
                     android:onClick="onBtnTakeOff" />
@@ -73,7 +73,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button8"
+                    android:id="@+id/btnArmed"
                     android:background="@drawable/main_btn_armed"
                     android:layout_weight="1"
                     android:layout_marginLeft="10dp"
@@ -99,7 +99,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button5"
+                    android:id="@+id/btnLanding"
                     android:background="@drawable/main_btn_landdisarmed"
                     android:layout_weight="1"
                     android:onClick="onBtnLanding" />
