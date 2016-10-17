@@ -154,5 +154,7 @@ public class PhotoActivity extends AppCompatActivity {
         }
     }
 
-
+    public void onBtnReturn(View view) {
+        finish();
+    }
 }

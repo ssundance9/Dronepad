@@ -254,6 +254,10 @@ public class ManualActivity extends AppCompatActivity {
         button.setBackgroundResource(R.drawable.manual_btn_off_left);
     }
 
+    public void onBtnReturn(View view) {
+        finish();
+    }
+
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }

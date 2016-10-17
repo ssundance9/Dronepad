@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -70,40 +71,20 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case AttributeEvent.STATE_CONNECTED:
-
                     alertUser("드론과 연결되었습니다.");
                     updateConnectedButton(true);
-                    /*if (notificationHandler != null)
-                        notificationHandler.init();
-
-                    if (NetworkUtils.isOnSoloNetwork(context)) {
-                        bringUpCellularNetwork(context);
-                    }*/
                     break;
 
                 case AttributeEvent.STATE_DISCONNECTED:
                     alertUser("드론과 연결이 끊겼습니다.");
                     updateConnectedButton(false);
-                    /*if (notificationHandler != null) {
-                        notificationHandler.terminate();
-                    }*/
-
-
                     break;
-
-                case AttributeEvent.STATE_ARMING:
-                    updateArmedButton();
 
                 case AttributeEvent.AUTOPILOT_ERROR:
                     final String errorName = intent.getStringExtra(AttributeEventExtra.EXTRA_AUTOPILOT_ERROR_ID);
-                    /*if (notificationHandler != null)
-                        notificationHandler.onAutopilotError(errorName);*/
                     break;
 
                 default:
-                    updateTakeOffButton();
-                    updateArmedButton();
-                    updateLandingButton();
 
             }
         }
@@ -119,7 +100,72 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         updateConnectedButton(this.drone.isConnected());
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, filter);
+
+        findViewById(R.id.btnFollowMe).setOnTouchListener(onTouchListenerFollowMe);
+        findViewById(R.id.btnTakeOff).setOnTouchListener(onTouchListenerTakeOff);
+        findViewById(R.id.btnArmed).setOnTouchListener(onTouchListenerArm);
+        findViewById(R.id.btnLanding).setOnTouchListener(onTouchListenerLanding);
     }
+
+    Button.OnTouchListener onTouchListenerFollowMe = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_followme_hover);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_followme);
+                    break;
+            }
+            return false;
+        }
+    };
+
+    Button.OnTouchListener onTouchListenerTakeOff = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_takeoff_hover);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_takeoff);
+                    break;
+            }
+            return false;
+        }
+    };
+
+    Button.OnTouchListener onTouchListenerArm = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_armed_hover);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_armed);
+                    break;
+            }
+            return false;
+        }
+    };
+
+    Button.OnTouchListener onTouchListenerLanding = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_landdisarmed_hover);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_landdisarmed);
+                    break;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onStart() {
@@ -329,11 +375,9 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
         if (vehicleState.isFlying() && !followState.isEnabled()) {
             alertUser("FOLLOW ME를 시작합니다.");
-            thisButton.setBackgroundResource(R.drawable.main_btn_followme_hover);// todo update button
             FollowApi.getApi(drone).enableFollowMe(FollowType.LEASH);
         } else if (vehicleState.isFlying() && followState.isEnabled()) {
             alertUser("FOLLOW ME를 종료합니다.");
-            thisButton.setBackgroundResource(R.drawable.main_btn_followme);// todo update button
             FollowApi.getApi(drone).disableFollowMe();
         } else {
             alertUser("FOLLOW ME를 시작할 수 없습니다.");
@@ -345,56 +389,12 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         startActivity(intent);
     }
 
+    public void onBtnReturn(View view) {
+        finish();
+    }
+
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
-
-    // take off 버튼 업데이트
-    protected void updateTakeOffButton() {
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-        Button btnTakeOff = (Button)findViewById(R.id.btnTakeOff);
-
-        if (vehicleState.isFlying()) {
-
-            btnTakeOff.setBackgroundResource(R.drawable.main_btn_takeoff_hover);
-
-        } else {
-
-            btnTakeOff.setBackgroundResource(R.drawable.main_btn_takeoff);
-
-        }
-    }
-
-    // arm 버튼 업데이트
-    protected void updateArmedButton() {
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-        Button btnArmed = (Button)findViewById(R.id.btnArmed);
-
-        if (vehicleState.isArmed()) {
-
-            btnArmed.setBackgroundResource(R.drawable.main_btn_armed_hover);
-
-        } else {
-
-            btnArmed.setBackgroundResource(R.drawable.main_btn_armed);
-
-        }
-    }
-
-    // landing 버튼 업데이트
-    protected void updateLandingButton() {
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-        Button btnLanding = (Button)findViewById(R.id.btnLanding);
-
-        if (vehicleState.isFlying()) {
-
-            btnLanding.setBackgroundResource(R.drawable.main_btn_landdisarmed);
-
-        } else {
-
-            btnLanding.setBackgroundResource(R.drawable.main_btn_landdisarmed_hover);
-
-        }
     }
 
     // 연결버튼 업데이트

@@ -38,7 +38,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/setup_btn_return"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:onClick="onBtnReturn" />
 
         <ImageView
             android:layout_width="wrap_content"

@@ -20,7 +20,7 @@
 		<ImageView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/imageView"
+
 			android:src="@drawable/manual_manualflight"
 			android:layout_alignParentLeft="true"
 			android:layout_alignParentStart="true"/>
@@ -196,22 +196,32 @@
 
 	</LinearLayout>
 
-	<LinearLayout
+	<RelativeLayout
 		android:orientation="horizontal"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:gravity="center"
+
 		android:layout_below="@id/activitymanualLinearLayout1"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentStart="true">
+		>
+
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/setup_btn_return"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"
+			android:onClick="onBtnReturn" />
 
 		<ImageView
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
-			android:id="@+id/imageView3"
-			android:src="@drawable/main_ci_d"/>
 
-	</LinearLayout>
+			android:src="@drawable/main_ci_d"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+			/>
+
+	</RelativeLayout>
 
 </RelativeLayout>
 

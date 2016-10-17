@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -162,6 +163,10 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
     @Override
     public void onApiDisconnected() {
 
+    }
+
+    public void onBtnReturn(View view) {
+        finish();
     }
 
     protected void alertUser(String message) {

@@ -30,7 +30,7 @@ public class ImagePopup extends AppCompatActivity implements View.OnClickListene
         /** 완성된 이미지 보여주기  */
         BitmapFactory.Options bfo = new BitmapFactory.Options();
         bfo.inSampleSize = 2;
-        ImageView iv = (ImageView)findViewById(R.id.imageView);
+        ImageView iv = (ImageView)findViewById(R.id.imageViewPop);
         Bitmap bm = BitmapFactory.decodeFile(imgPath, bfo);
         Bitmap resized = Bitmap.createScaledBitmap(bm, imgWidth, imgHeight, true);
         iv.setImageBitmap(resized);
@@ -47,5 +47,10 @@ public class ImagePopup extends AppCompatActivity implements View.OnClickListene
                 startActivity(intent);
                 break;
         }*/
+    }
+
+    public void onBtnReturn(View view) {
+        Intent intent = new Intent(mContext, PhotoActivity.class);
+        startActivity(intent);
     }
 }
