@@ -1,46 +1,28 @@
 package com.marorobot.dronepad;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.FollowApi;
 import com.o3dr.android.client.apis.VehicleApi;
-import com.o3dr.android.client.interfaces.DroneListener;
-import com.o3dr.android.client.interfaces.TowerListener;
-import com.o3dr.services.android.lib.coordinate.LatLong;
-import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
-import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
-import com.o3dr.services.android.lib.drone.connection.ConnectionResult;
-import com.o3dr.services.android.lib.drone.connection.ConnectionType;
-import com.o3dr.services.android.lib.drone.property.Altitude;
-import com.o3dr.services.android.lib.drone.property.Gps;
-import com.o3dr.services.android.lib.drone.property.Home;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.Parameters;
-import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
-import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.gcs.follow.FollowState;
 import com.o3dr.services.android.lib.gcs.follow.FollowType;
@@ -48,7 +30,6 @@ import com.o3dr.services.android.lib.model.SimpleCommandListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by ssundance on 2016-08-21.
@@ -104,7 +85,9 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         findViewById(R.id.btnFollowMe).setOnTouchListener(onTouchListenerFollowMe);
         findViewById(R.id.btnTakeOff).setOnTouchListener(onTouchListenerTakeOff);
         findViewById(R.id.btnArmed).setOnTouchListener(onTouchListenerArm);
+        findViewById(R.id.btnManualFlight).setOnTouchListener(onTouchListenerManual);
         findViewById(R.id.btnLanding).setOnTouchListener(onTouchListenerLanding);
+
     }
 
     Button.OnTouchListener onTouchListenerFollowMe = new View.OnTouchListener() {
@@ -146,6 +129,21 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
                     break;
                 case MotionEvent.ACTION_UP:
                     ((Button) view).setBackgroundResource(R.drawable.main_btn_armed);
+                    break;
+            }
+            return false;
+        }
+    };
+
+    Button.OnTouchListener onTouchListenerManual = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_manualflight_hover);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ((Button) view).setBackgroundResource(R.drawable.main_btn_manualflight);
                     break;
             }
             return false;

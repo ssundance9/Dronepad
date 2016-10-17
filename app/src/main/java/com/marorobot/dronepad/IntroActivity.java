@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -84,7 +85,51 @@ public class IntroActivity extends AppCompatActivity {
         updateConnectedButton(this.drone.isConnected());
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, filter);
+
+        findViewById(R.id.btnPhoto).setOnTouchListener(onTouchListener);
+        findViewById(R.id.btnConnectIntro).setOnTouchListener(onTouchListener);
+        findViewById(R.id.btnSetup).setOnTouchListener(onTouchListener);
     }
+
+    Button.OnTouchListener onTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            Button button = (Button) view;
+            int btnId = button.getId();
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+
+                    switch (btnId) {
+                        case R.id.btnPhoto:
+                            button.setBackgroundResource(R.drawable.intro_btn_photo_hover);
+                            break;
+                        case R.id.btnConnectIntro:
+                            button.setBackgroundResource(R.drawable.intro_btn_connect_hover);
+                            break;
+                        case R.id.btnSetup:
+                            button.setBackgroundResource(R.drawable.intro_btn_setup_hover);
+                            break;
+                    }
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    switch (btnId) {
+                        case R.id.btnPhoto:
+                            button.setBackgroundResource(R.drawable.intro_btn_photo);
+                            break;
+                        case R.id.btnConnectIntro:
+                            button.setBackgroundResource(R.drawable.intro_btn_connect);
+                            break;
+                        case R.id.btnSetup:
+                            button.setBackgroundResource(R.drawable.intro_btn_setup);
+                            break;
+                    }
+                    break;
+            }
+            return false;
+        }
+    };
 
     public void onBtnConnectTap(View view) {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);

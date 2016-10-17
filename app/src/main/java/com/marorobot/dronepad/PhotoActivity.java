@@ -155,6 +155,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     public void onBtnReturn(View view) {
-        finish();
+        Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
+        startActivity(intent);
     }
 }
