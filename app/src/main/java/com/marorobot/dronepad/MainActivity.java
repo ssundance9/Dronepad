@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
             // Take off
             //ControlApi.getApi(this.drone).takeoff(2, null); // Default take off altitude is 2m
 
-            ControlApi.getApi(this.drone).takeoff(2, new SimpleCommandListener() {
+            ControlApi.getApi(this.drone).takeoff(1, new SimpleCommandListener() {
                 @Override
                 public void onSuccess() {
                     VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_AUTO);
@@ -336,7 +336,6 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
         if (vehicleState.isFlying()) {
             // Land
-            //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
             VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_LAND);
             VehicleApi.getApi(this.drone).arm(false, new SimpleCommandListener() {
                 @Override
@@ -355,7 +354,22 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
                 }
             });
         } else if (vehicleState.isArmed()) {
-            alertUser("TakeOff 버튼을 클릭하세요.");
+            VehicleApi.getApi(this.drone).arm(false, new SimpleCommandListener() {
+                @Override
+                public void onSuccess() {
+                    alertUser("DISARM 성공.");
+                }
+
+                @Override
+                public void onError(int executionError) {
+                    alertUser("DISARM 실패. - " + executionError);
+                }
+
+                @Override
+                public void onTimeout() {
+                    alertUser("DISARM TIMEOUT");
+                }
+            });
         } else if (!vehicleState.isConnected()) {
             // Connect
             alertUser("먼저 드론과 연결하십시오.");
@@ -383,8 +397,14 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
     }
 
     public void onBtnManual(View view) {
-        Intent intent = new Intent(getApplicationContext(), ManualActivity.class);
-        startActivity(intent);
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        
+        if (vehicleState.isFlying()) {
+            Intent intent = new Intent(getApplicationContext(), ManualActivity.class);
+            startActivity(intent);
+        } else {
+            alertUser("드론이 비행상태가 아닙니다.");
+        }
     }
 
     public void onBtnReturn(View view) {
@@ -392,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
     }
 
     protected void alertUser(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     // 연결버튼 업데이트
