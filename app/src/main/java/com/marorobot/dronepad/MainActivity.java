@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ssundance on 2016-08-21.
+ * Connect, Arm, TakeOff, FollowMe, ManualFlight 관련 Activity
  */
 public class MainActivity extends AppCompatActivity implements DronePadApp.ApiListener {
 
@@ -208,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
             //DronePadApp.connectToDrone(getApplicationContext());
             dPad.connectToDrone();
-
         }
     }
 
@@ -280,28 +279,11 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
-        /*if (vehicleState.isFlying()) {
-            // Land
-            alertUser("드론이 비행중입니다.");
-            //this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            this.drone.arm(true);
-        }*/
-
         if (vehicleState.isFlying()) {
             // Land
             alertUser("드론이 비행중입니다.");
         } else if (vehicleState.isArmed()) {
-            // Take off
-            //ControlApi.getApi(this.drone).takeoff(2, null); // Default take off altitude is 2m
-
+            // Take off - Default take off altitude is 1m
             ControlApi.getApi(this.drone).takeoff(1, new SimpleCommandListener() {
                 @Override
                 public void onSuccess() {

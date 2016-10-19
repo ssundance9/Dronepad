@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/ImgGridView"
         android:layout_below="@+id/imageView"
-        android:layout_above="@+id/relativeLayout" />
+        android:layout_above="@+id/relativeLayout"
+        android:numColumns="3" />
 
     <RelativeLayout
         android:orientation="horizontal"

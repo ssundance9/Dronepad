@@ -27,7 +27,7 @@ public class PhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo);
         mContext = this;
 
-        GridView gv = (GridView)findViewById(R.id.ImgGridView);
+        GridView gv = (GridView) findViewById(R.id.ImgGridView);
         final ImageAdapter ia = new ImageAdapter(this);
         gv.setAdapter(ia);
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -102,7 +102,8 @@ public class PhotoActivity extends AppCompatActivity {
                     MediaStore.Images.Media.DISPLAY_NAME,
                     MediaStore.Images.Media.SIZE};
 
-            Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            //Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     proj, null, null, null);
 
             if (imageCursor != null && imageCursor.moveToFirst()){
@@ -140,8 +141,12 @@ public class PhotoActivity extends AppCompatActivity {
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.DISPLAY_NAME,
                     MediaStore.Images.Media.SIZE};
-            Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            //Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    //proj, "_ID='"+ thumbID +"'", null, null);
+
+            Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     proj, "_ID='"+ thumbID +"'", null, null);
+
 
             if (imageCursor != null && imageCursor.moveToFirst()){
                 if (imageCursor.getCount() > 0){
