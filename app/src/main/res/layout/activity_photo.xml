@@ -24,7 +24,12 @@
         android:id="@+id/ImgGridView"
         android:layout_below="@+id/imageView"
         android:layout_above="@+id/relativeLayout"
-        android:numColumns="3" />
+        android:numColumns="4"
+        android:gravity="center"
+        android:stretchMode="columnWidth"
+        android:horizontalSpacing="5dp"
+        android:verticalSpacing="5dp"
+        android:scrollIndicators="bottom" />
 
     <RelativeLayout
         android:orientation="horizontal"

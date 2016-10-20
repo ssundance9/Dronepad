@@ -50,7 +50,6 @@ public class ImagePopup extends AppCompatActivity implements View.OnClickListene
     }
 
     public void onBtnReturn(View view) {
-        Intent intent = new Intent(mContext, PhotoActivity.class);
-        startActivity(intent);
+        finish();
     }
 }

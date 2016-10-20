@@ -80,7 +80,7 @@ public class PhotoActivity extends AppCompatActivity {
             ImageView imageView;
             if (convertView == null){
                 imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(95, 95));
+                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
                 imageView.setAdjustViewBounds(false);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(2, 2, 2, 2);
@@ -90,21 +90,22 @@ public class PhotoActivity extends AppCompatActivity {
             BitmapFactory.Options bo = new BitmapFactory.Options();
             bo.inSampleSize = 8;
             Bitmap bmp = BitmapFactory.decodeFile(thumbsDataList.get(position), bo);
-            Bitmap resized = Bitmap.createScaledBitmap(bmp, 95, 95, true);
+            Bitmap resized = Bitmap.createScaledBitmap(bmp, 200, 200, true);
             imageView.setImageBitmap(resized);
 
             return imageView;
         }
 
         private void getThumbInfo(ArrayList<String> thumbsIDs, ArrayList<String> thumbsDatas){
-            String[] proj = {MediaStore.Images.Media._ID,
-                    MediaStore.Images.Media.DATA,
-                    MediaStore.Images.Media.DISPLAY_NAME,
-                    MediaStore.Images.Media.SIZE};
+            String[] proj = {MediaStore.Images.Thumbnails.IMAGE_ID,
+                    MediaStore.Images.Thumbnails.DATA
+                    //MediaStore.Images.Thumbnails.DISPLAY_NAME,
+                    //MediaStore.Images.Thumbnails.SIZE
+            };
 
             //Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            Cursor imageCursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    proj, null, null, null);
+            Cursor imageCursor = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
+                    proj, null, null, MediaStore.Images.Thumbnails.DEFAULT_SORT_ORDER);
 
             if (imageCursor != null && imageCursor.moveToFirst()){
                 String title;
@@ -114,18 +115,18 @@ public class PhotoActivity extends AppCompatActivity {
                 String data;
                 String imgSize;
 
-                int thumbsIDCol = imageCursor.getColumnIndex(MediaStore.Images.Media._ID);
-                int thumbsDataCol = imageCursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                int thumbsImageIDCol = imageCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
-                int thumbsSizeCol = imageCursor.getColumnIndex(MediaStore.Images.Media.SIZE);
+                int thumbsIDCol = imageCursor.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID);
+                int thumbsDataCol = imageCursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA);
+                //int thumbsImageIDCol = imageCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME);
+                //int thumbsSizeCol = imageCursor.getColumnIndex(MediaStore.Images.Media.SIZE);
                 int num = 0;
                 do {
                     thumbsID = imageCursor.getString(thumbsIDCol);
                     thumbsData = imageCursor.getString(thumbsDataCol);
-                    thumbsImageID = imageCursor.getString(thumbsImageIDCol);
-                    imgSize = imageCursor.getString(thumbsSizeCol);
+                    //thumbsImageID = imageCursor.getString(thumbsImageIDCol);
+                    //imgSize = imageCursor.getString(thumbsSizeCol);
                     num++;
-                    if (thumbsImageID != null){
+                    if (thumbsID != null){
                         thumbsIDs.add(thumbsID);
                         thumbsDatas.add(thumbsData);
                     }

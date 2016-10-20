@@ -20,8 +20,8 @@
         
     <HorizontalScrollView
         android:id="@+id/photo_horizontablscrollview" 
-        android:layout_width="0dip"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:fillViewport="true"
         android:scrollbarSize="5dip"
@@ -30,9 +30,9 @@
         >
         
         <LinearLayout 
-            android:id="@+id/category_layout"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
+            android:id="@+id/photo_linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
                 
             <!-- <GridView
@@ -40,6 +40,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/ImgGridView"
                 /> -->
+            <!-- <Gridview
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:stretchmode="columnWidth"
+                android:columnwidth="96dp"
+                android:horizontalspacing="5dp"
+                android:verticalspacing="5dp"
+                android:numcolumns="4">
+            </Gridview> -->
             
          </LinearLayout>
     </HorizontalScrollView>

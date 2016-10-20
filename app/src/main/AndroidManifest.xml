@@ -31,8 +31,12 @@
         <activity
             android:name=".ManualActivity"
             android:screenOrientation="landscape" />
+
         <activity
             android:name=".PhotoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Photo2Activity"
             android:screenOrientation="landscape" />
 
         <!-- <service android:name=".AppService" /> -->
