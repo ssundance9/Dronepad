@@ -35,10 +35,12 @@ import java.util.List;
  * Connect, Arm, TakeOff, FollowMe, ManualFlight 관련 Activity
  */
 public class MainActivity extends AppCompatActivity implements DronePadApp.ApiListener {
-
+    // 드론
     private Drone drone;
+    // 어플리케이션
     private DronePadApp dPad;
 
+    // 이벤트 필터
     private static final IntentFilter filter = new IntentFilter();
     static {
         filter.addAction(AttributeEvent.STATE_CONNECTED);
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         filter.addAction(AttributeEvent.STATE_ARMING);
         filter.addAction(AttributeEvent.AUTOPILOT_ERROR);
     }
-
+    // 이벤트 리시버
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -61,9 +63,9 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
                     updateConnectedButton(false);
                     break;
 
-                case AttributeEvent.AUTOPILOT_ERROR:
+                /*case AttributeEvent.AUTOPILOT_ERROR:
                     final String errorName = intent.getStringExtra(AttributeEventExtra.EXTRA_AUTOPILOT_ERROR_ID);
-                    break;
+                    break;*/
 
                 default:
 
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
     }
 
+    // follow me 터치 리스너
     Button.OnTouchListener onTouchListenerFollowMe = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     };
 
+    // take off 터치 리스너
     Button.OnTouchListener onTouchListenerTakeOff = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -120,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     };
 
+    // arm 터치 리스너
     Button.OnTouchListener onTouchListenerArm = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     };
 
+    // manual flight 터치 리스너
     Button.OnTouchListener onTouchListenerManual = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -150,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     };
 
+    // land disarm 터치 리스너
     Button.OnTouchListener onTouchListenerLanding = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -187,48 +194,19 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
     }
 
+    // connnet 이벤트
     public void onBtnConnect(View view) {
         if(this.drone.isConnected()) {
             this.drone.disconnect();
         } else {
-            //Bundle extraParams = new Bundle();
-            //extraParams.putInt(ConnectionType.EXTRA_UDP_SERVER_PORT, 14550); // Set default port to 14550
-            //extraParams.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, 57600); // Set default baud rate to 57600
-
-
-
-            //ConnectionParameter connectionParams = new ConnectionParameter(ConnectionType.TYPE_BLUETOOTH, extraParams, null);
-            //String address = this.btDevice.getAddress();
-            //ConnectionParameter connectionParams = ConnectionParameter.newBluetoothConnection(address);
-
-
-            //this.drone.connect(connectionParams);
-
-
-
-            //DronePadApp.connectToDrone(getApplicationContext());
-            dPad.connectToDrone();
+            this.dPad.connectToDrone();
         }
     }
 
+    // arm 이벤트
     public void onBtnArm(View view) {
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-
-        /*if (vehicleState.isFlying()) {
-            // Land
-            this.drone.changeVehicleMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            this.drone.doGuidedTakeoff(10); // Default take off altitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            alertUser("먼저 드론과 연결하십시오.");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            //this.drone.arm(true);
-            VehicleApi.getApi(this.drone).arm(true);
-        }*/
 
         if (!vehicleState.isConnected()) {
             alertUser("먼저 드론과 연결하십시오.");
@@ -250,9 +228,6 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
 
             Parameters ps = new Parameters(parametersList);
             VehicleApi.getApi(this.drone).writeParameters(ps);
-
-            //VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
-
             VehicleApi.getApi(this.drone).arm(true, new SimpleCommandListener() {
                 @Override
                 public void onSuccess() {
@@ -275,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     }
 
+    // take off 이벤트
     public void onBtnTakeOff(View view) {
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
@@ -312,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     }
 
+    // land 이벤트
     public void onBtnLanding(View view) {
         Button thisButton = (Button)view;
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
@@ -361,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     }
 
+    // follow me 이벤트
     public void onBtnFollowMe(View view) {
         Button thisButton = (Button)view;
 
@@ -378,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     }
 
+    // manual flight 이벤트
     public void onBtnManual(View view) {
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
         
@@ -389,10 +368,12 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         }
     }
 
+    // 뒤로가기 이벤트
     public void onBtnReturn(View view) {
         finish();
     }
 
+    // 토스트 팝업
     protected void alertUser(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
@@ -402,15 +383,11 @@ public class MainActivity extends AppCompatActivity implements DronePadApp.ApiLi
         Button btnConnect = (Button)findViewById(R.id.btnConnect);
         ImageView imageConnect = (ImageView) findViewById(R.id.imageConnect);
         if (isConnected) {
-            //connectButton.setText("Disconnect");
             btnConnect.setBackgroundResource(R.drawable.main_btn_disconnect);
             imageConnect.setImageResource(R.drawable.main_cnt_on);
         } else {
-            //connectButton.setText("Connect");
             btnConnect.setBackgroundResource(R.drawable.main_btn_connect);
             imageConnect.setImageResource(R.drawable.main_cnt_off);
         }
     }
-
-
 }

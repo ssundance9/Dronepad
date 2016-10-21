@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+/**
+ * 상세 이미지 Activity
+ */
 public class ImagePopup extends AppCompatActivity implements View.OnClickListener {
 
     private Context mContext = null;
-    private final int imgWidth = 320;
-    private final int imgHeight = 372;
+    private final int imgWidth = 700;
+    private final int imgHeight = 700;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +32,26 @@ public class ImagePopup extends AppCompatActivity implements View.OnClickListene
 
         /** 완성된 이미지 보여주기  */
         BitmapFactory.Options bfo = new BitmapFactory.Options();
-        bfo.inSampleSize = 2;
+        bfo.inSampleSize = 4;
         ImageView iv = (ImageView)findViewById(R.id.imageViewPop);
         Bitmap bm = BitmapFactory.decodeFile(imgPath, bfo);
-        Bitmap resized = Bitmap.createScaledBitmap(bm, imgWidth, imgHeight, true);
-        iv.setImageBitmap(resized);
 
-        /** 리스트로 가기 버튼 */
-        //Button btn = (Button)findViewById(R.id.btn_back);
-        //btn.setOnClickListener(this);
+        int height=bm.getHeight();
+        int width=bm.getWidth();
+
+        Bitmap resized = Bitmap.createScaledBitmap(bm, width, height, true);
+        iv.setImageBitmap(resized);
     }
 
     public void onClick(View v) {
-        /*switch(v.getId()){
-            case R.id.btn_back:
-                Intent intent = new Intent(mContext, PhotoActivity.class);
-                startActivity(intent);
-                break;
-        }*/
+
     }
 
     public void onBtnReturn(View view) {
+        finish();
+    }
+
+    public void onBtnClose(View view) {
         finish();
     }
 }

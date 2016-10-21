@@ -38,13 +38,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by ssundance on 2016-10-05.
+ * Setup 화면 Activity
  */
 public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiListener {
-
+    // 드론
     private Drone drone;
+    // 어플리케이션
     private DronePadApp dPad;
-
+    // 이벤트 필터
     private static final IntentFilter filter = new IntentFilter();
     static {
         filter.addAction(AttributeEvent.STATE_CONNECTED);
@@ -56,7 +57,7 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
         filter.addAction(AttributeEvent.SPEED_UPDATED);
         filter.addAction(AttributeEvent.HOME_UPDATED);
     }
-
+    // 이벤트 리시버
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -70,33 +71,14 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
                     break;
 
                 case AttributeEvent.STATE_UPDATED:
-                    /*State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-
-                    if (vehicleState.isArmed()) {
-                        alertUser("드론이 ARMING.");
-                    } else if (vehicleState.isFlying()) {
-                        alertUser("드론이 FLYING.");
-                    } //else if (vehicleState.isFlying()) {
-                    //alertUser("드론이 FLYING.");
-                    //}*/
 
                 case AttributeEvent.STATE_ARMING:
-                    //alertUser("STATE_ARMING");
-                    //updateArmButton();
                     break;
 
                 case AttributeEvent.STATE_VEHICLE_MODE:
-                    //updateVehicleMode();
-                    //alertUser("STATE_VEHICLE_MODE");
                     break;
 
                 case AttributeEvent.TYPE_UPDATED:
-                    //alertUser("TYPE_UPDATED");
-                /*Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
-                if (newDroneType.getDroneType() != this.droneType) {
-                    this.droneType = newDroneType.getDroneType();
-                    updateVehicleModesForType(this.droneType);
-                }*/
                     break;
 
                 case AttributeEvent.SPEED_UPDATED:
@@ -119,9 +101,9 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
                     updateTime();
                     break;
 
-                case AttributeEvent.HOME_UPDATED:
+                //case AttributeEvent.HOME_UPDATED:
                     //updateDistanceFromHome();
-                    break;
+                    //break;
 
                 default:
                     break;
@@ -134,8 +116,8 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
-        dPad = (DronePadApp) getApplication();
-        this.drone = dPad.getDrone();
+        this.dPad = (DronePadApp) getApplication();
+        this.drone = this.dPad.getDrone();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, filter);
 
@@ -165,32 +147,31 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
 
     }
 
+    // 뒤로가기
     public void onBtnReturn(View view) {
         finish();
     }
 
+    // 토스트 팝업
     protected void alertUser(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    // 고도 업데이트
     protected void updateAltitude() {
         TextView altitudeTextView = (TextView)findViewById(R.id.altitudeValueTextView);
         Altitude altitude = this.drone.getAttribute(AttributeType.ALTITUDE);
         altitudeTextView.setText(String.format("%3.1f", altitude.getAltitude()) + "m");
     }
 
-    /*protected void updateAttitude() {
-        TextView altitudeTextView = (TextView)findViewById(R.id.altitudeValueTextView);
-        Attitude attitude = this.drone.getAttribute(AttributeType.ATTITUDE);
-        altitudeTextView.setText(String.format("%3.1f", attitude.getAltitude()) + "m");
-    }*/
-
+    // 속도 업데이트
     protected void updateSpeed() {
         TextView speedTextView = (TextView)findViewById(R.id.speedValueTextView);
         Speed speed = this.drone.getAttribute(AttributeType.SPEED);
         speedTextView.setText(String.format("%3.1f", speed.getGroundSpeed()) + "m/s");
     }
 
+    // 위도 경도 업데이트
     protected void updateLatLong() {
         TextView latitudeValueTextView = (TextView)findViewById(R.id.latitudeValueTextView);
         TextView longitudeValueTextView = (TextView)findViewById(R.id.longitudeValueTextView);
@@ -205,12 +186,13 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
         }
     }
 
+    // 시간 업데이트
     protected void updateTime() {
         TextView timeTextView = (TextView)findViewById(R.id.timeTextView);
         timeTextView.setText(new SimpleDateFormat("a hh:mm:ss").format(new Date()));
     }
 
-    protected void updateDistanceFromHome() {
+    /*protected void updateDistanceFromHome() {
         TextView distanceTextView = (TextView)findViewById(R.id.distanceValueTextView);
         Altitude droneAltitude = this.drone.getAttribute(AttributeType.ALTITUDE);
         double vehicleAltitude = droneAltitude.getAltitude();
@@ -228,9 +210,9 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
         }
 
         distanceTextView.setText(String.format("%3.1f", distanceFromHome) + "m");
-    }
+    }*/
 
-    protected double distanceBetweenPoints(LatLongAlt pointA, LatLongAlt pointB) {
+    /*protected double distanceBetweenPoints(LatLongAlt pointA, LatLongAlt pointB) {
         if (pointA == null || pointB == null) {
             return 0;
         }
@@ -238,6 +220,5 @@ public class SetupActivity extends AppCompatActivity implements DronePadApp.ApiL
         double dy  = pointA.getLongitude() - pointB.getLongitude();
         double dz = pointA.getAltitude() - pointB.getAltitude();
         return Math.sqrt(dx*dx + dy*dy + dz*dz);
-    }
-
+    }*/
 }

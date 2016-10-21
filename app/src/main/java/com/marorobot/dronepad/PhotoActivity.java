@@ -17,6 +17,9 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
+/**
+ * Photo 화면 Activity
+ */
 public class PhotoActivity extends AppCompatActivity {
 
     private Context mContext;
@@ -105,7 +108,7 @@ public class PhotoActivity extends AppCompatActivity {
 
             //Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             Cursor imageCursor = getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI,
-                    proj, null, null, MediaStore.Images.Thumbnails.DEFAULT_SORT_ORDER);
+                    proj, null, null, MediaStore.Images.Thumbnails.IMAGE_ID + " DESC");
 
             if (imageCursor != null && imageCursor.moveToFirst()){
                 String title;
