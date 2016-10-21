@@ -9,10 +9,34 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/bg"
     tools:context="com.marorobot.dronepad.ImagePopup">
+    
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/photo_popup_btn_left"
+            android:onClick="onBtnPrev"
+            />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/imageViewPop"
-        android:onClick="onBtnReturn" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageViewPop"
+            android:onClick="onBtnReturn"
+            />
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/photo_popup_btn_right.png"
+            android:onClick="onBtnNext"
+            />
+        
+    </LinearLayout>
+        
 </RelativeLayout>
